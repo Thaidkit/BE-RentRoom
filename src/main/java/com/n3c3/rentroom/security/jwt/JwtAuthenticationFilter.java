@@ -1,6 +1,6 @@
 package com.n3c3.rentroom.security.jwt;
 
-import com.n3c3.rentroom.service.CustomUserDetailService;
+import com.n3c3.rentroom.security.CustomUserDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

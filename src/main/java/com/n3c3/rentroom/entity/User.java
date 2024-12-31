@@ -1,10 +1,10 @@
 package com.n3c3.rentroom.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name = "user")
@@ -13,7 +13,7 @@ import lombok.Setter;
 public class User extends AbstractAudittingEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "full_name", nullable = false)
@@ -23,16 +23,18 @@ public class User extends AbstractAudittingEntity {
     private String username;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email
     private String email;
 
     @Column(name = "phone", nullable = false, unique = true)
+    @Size(min = 7, max = 11)
     private String phone;
 
     @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "is_actived")
-    private boolean actived = Boolean.TRUE;
+    private boolean isActived;
 
     @Column(name = "image")
     private String image;
@@ -92,11 +94,11 @@ public class User extends AbstractAudittingEntity {
     }
 
     public boolean isActived() {
-        return actived;
+        return isActived;
     }
 
-    public void setActived(boolean actived) {
-        this.actived = actived;
+    public void setActived(boolean isActived) {
+        this.isActived = isActived;
     }
 
     public String getImage() {

@@ -1,8 +1,7 @@
-package com.n3c3.rentroom.service;
+package com.n3c3.rentroom.security;
 
 import com.n3c3.rentroom.entity.User;
 import com.n3c3.rentroom.repository.UserRepository;
-import com.n3c3.rentroom.security.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
