@@ -45,7 +45,7 @@ public class AuthenticateService {
                     new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword())
             );
 
-            CustomUserDetails user = customUserDetailService.loadUserByUsername(login.getUsername());
+            CustomUserDetails user = customUserDetailService.loadUserByPhoneOrEmail(login.getUsername());
             String jwt = jwtTokenProvider.generateToken(user);
 
             return ResponseEntity.ok().body(new ObjectResponse(200, "Login successfully!", jwt));
@@ -56,7 +56,7 @@ public class AuthenticateService {
 
     public ResponseEntity<?> register(User user) {
         try {
-            if (userRepository.findByUsername(user.getUsername()) == null) {
+            if (userRepository.findByPhoneOrEmail(user.getPhone()) == null &&  userRepository.findByPhoneOrEmail(user.getEmail()) == null) {
                 user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
                 user.setRole(Role.USER);
                 user.setTotalMoney(0L);

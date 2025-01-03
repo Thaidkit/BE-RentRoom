@@ -1,8 +1,7 @@
 package com.n3c3.rentroom.security;
 
 import com.n3c3.rentroom.entity.User;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(User user) {
         this.id = user.getId();
-        this.username = user.getUsername();
+        this.username = user.getEmail();
         this.phone = user.getPhone();
         this.password = user.getPassword();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));

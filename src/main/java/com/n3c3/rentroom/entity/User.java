@@ -23,9 +23,6 @@ public class User extends AbstractAudittingEntity {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
     @Column(name = "email", nullable = false, unique = true)
     @Email
     private String email;
@@ -66,14 +63,6 @@ public class User extends AbstractAudittingEntity {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
