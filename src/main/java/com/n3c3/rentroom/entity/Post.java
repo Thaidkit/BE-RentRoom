@@ -21,11 +21,11 @@ public class Post extends AbstractAudittingEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "price", nullable = false, precision = 15, scale = 2)
+    @Column(name = "price", nullable = false)
     private Double price;
 
     @Column(name = "room_size", nullable = false)
-    private Float roomSize;
+    private Double roomSize;
 
     @Column(name = "description")
     private String description;
@@ -36,29 +36,17 @@ public class Post extends AbstractAudittingEntity {
     @Column(name = "videos")
     private String videos;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @Column(name = "posted_date")
-    private Date postedDate;
-
     @Column(name = "expired_date")
     private Date expiredDate;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "modified_at", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedAt;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -91,11 +79,11 @@ public class Post extends AbstractAudittingEntity {
         this.price = price;
     }
 
-    public Float getRoomSize() {
+    public Double getRoomSize() {
         return roomSize;
     }
 
-    public void setRoomSize(Float roomSize) {
+    public void setRoomSize(Double roomSize) {
         this.roomSize = roomSize;
     }
 
@@ -123,6 +111,14 @@ public class Post extends AbstractAudittingEntity {
         this.videos = videos;
     }
 
+    public Date getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(Date expiredDate) {
+        this.expiredDate = expiredDate;
+    }
+
     public User getUser() {
         return user;
     }
@@ -137,37 +133,5 @@ public class Post extends AbstractAudittingEntity {
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public Date getPostedDate() {
-        return postedDate;
-    }
-
-    public void setPostedDate(Date postedDate) {
-        this.postedDate = postedDate;
-    }
-
-    public Date getExpiredDate() {
-        return expiredDate;
-    }
-
-    public void setExpiredDate(Date expiredDate) {
-        this.expiredDate = expiredDate;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getModifiedAt() {
-        return modifiedAt;
-    }
-
-    public void setModifiedAt(Date modifiedAt) {
-        this.modifiedAt = modifiedAt;
     }
 }
