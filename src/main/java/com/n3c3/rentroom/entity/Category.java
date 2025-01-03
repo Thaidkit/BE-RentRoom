@@ -1,5 +1,6 @@
 package com.n3c3.rentroom.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +20,8 @@ public class Category extends AbstractAudittingEntity{
     @Column(name = "category_name", nullable = false, length = 100)
     private String categoryName;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
 
     // Getters and setters

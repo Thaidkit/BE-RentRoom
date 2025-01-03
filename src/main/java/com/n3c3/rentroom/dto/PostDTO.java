@@ -1,58 +1,37 @@
-package com.n3c3.rentroom.entity;
+package com.n3c3.rentroom.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.time.LocalDate;
-import java.util.Date;
-
-@Entity
-@Table(name = "post")
-@AllArgsConstructor
-@NoArgsConstructor
-public class Post extends AbstractAudittingEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+import com.n3c3.rentroom.dto.CategoryDTO;
+import com.n3c3.rentroom.dto.UserDTO;
+public class PostDTO {
     private Long id;
-
-    @Column(name = "title", nullable = false, length = 255)
     private String title;
-
-    @Column(name = "address", nullable = false)
     private String address;
-
-    @Column(name = "price", nullable = false)
     private Double price;
-
-    @Column(name = "room_size", nullable = false)
     private Double roomSize;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "images")
     private String images;
-
-    @Column(name = "videos")
     private String videos;
+    private String expiredDate;
+    private UserDTO user;
+    private CategoryDTO category;
 
-    @Column(name = "expired_date")
-    private LocalDate expiredDate;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    @JsonBackReference
+    // Constructor
+    public PostDTO(Long id, String title, String address, Double price, Double roomSize, String description,
+                   String images, String videos, String expiredDate, UserDTO user, CategoryDTO category) {
+        this.id = id;
+        this.title = title;
+        this.address = address;
+        this.price = price;
+        this.roomSize = roomSize;
+        this.description = description;
+        this.images = images;
+        this.videos = videos;
+        this.expiredDate = expiredDate;
+        this.user = user;
+        this.category = category;
+    }
 
-    private User user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference
-    private Category category;
-
+    // Getter và Setter cho id
     public Long getId() {
         return id;
     }
@@ -61,6 +40,7 @@ public class Post extends AbstractAudittingEntity {
         this.id = id;
     }
 
+    // Getter và Setter cho title
     public String getTitle() {
         return title;
     }
@@ -69,6 +49,7 @@ public class Post extends AbstractAudittingEntity {
         this.title = title;
     }
 
+    // Getter và Setter cho address
     public String getAddress() {
         return address;
     }
@@ -77,6 +58,7 @@ public class Post extends AbstractAudittingEntity {
         this.address = address;
     }
 
+    // Getter và Setter cho price
     public Double getPrice() {
         return price;
     }
@@ -85,6 +67,7 @@ public class Post extends AbstractAudittingEntity {
         this.price = price;
     }
 
+    // Getter và Setter cho roomSize
     public Double getRoomSize() {
         return roomSize;
     }
@@ -93,6 +76,7 @@ public class Post extends AbstractAudittingEntity {
         this.roomSize = roomSize;
     }
 
+    // Getter và Setter cho description
     public String getDescription() {
         return description;
     }
@@ -101,6 +85,7 @@ public class Post extends AbstractAudittingEntity {
         this.description = description;
     }
 
+    // Getter và Setter cho images
     public String getImages() {
         return images;
     }
@@ -109,6 +94,7 @@ public class Post extends AbstractAudittingEntity {
         this.images = images;
     }
 
+    // Getter và Setter cho videos
     public String getVideos() {
         return videos;
     }
@@ -117,27 +103,30 @@ public class Post extends AbstractAudittingEntity {
         this.videos = videos;
     }
 
-    public LocalDate getExpiredDate() {
+    // Getter và Setter cho expiredDate
+    public String getExpiredDate() {
         return expiredDate;
     }
 
-    public void setExpiredDate(LocalDate expiredDate) {
+    public void setExpiredDate(String expiredDate) {
         this.expiredDate = expiredDate;
     }
 
-    public User getUser() {
+    // Getter và Setter cho user
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
-    public Category getCategory() {
+    // Getter và Setter cho category
+    public CategoryDTO getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(CategoryDTO category) {
         this.category = category;
     }
 }
