@@ -1,13 +1,12 @@
 package com.n3c3.rentroom.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -34,18 +33,12 @@ public class Post extends AbstractAudittingEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "images")
-    private String images;
-
-    @Column(name = "videos")
-    private String videos;
-
     @Column(name = "expired_date")
     private LocalDate expiredDate;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonBackReference
-
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -53,6 +46,10 @@ public class Post extends AbstractAudittingEntity {
     @JsonBackReference
     private Category category;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Media> media;
+    
     public Long getId() {
         return id;
     }
@@ -101,22 +98,6 @@ public class Post extends AbstractAudittingEntity {
         this.description = description;
     }
 
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
-    }
-
-    public String getVideos() {
-        return videos;
-    }
-
-    public void setVideos(String videos) {
-        this.videos = videos;
-    }
-
     public LocalDate getExpiredDate() {
         return expiredDate;
     }
@@ -139,5 +120,13 @@ public class Post extends AbstractAudittingEntity {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<Media> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<Media> media) {
+        this.media = media;
     }
 }

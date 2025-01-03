@@ -1,7 +1,14 @@
 package com.n3c3.rentroom.dto;
 
-import com.n3c3.rentroom.dto.CategoryDTO;
-import com.n3c3.rentroom.dto.UserDTO;
+import com.n3c3.rentroom.entity.Post;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostDTO {
     private Long id;
     private String title;
@@ -9,29 +16,13 @@ public class PostDTO {
     private Double price;
     private Double roomSize;
     private String description;
-    private String images;
-    private String videos;
-    private String expiredDate;
-    private UserDTO user;
-    private CategoryDTO category;
+    private LocalDate expiredDate;
+    private Long userId;
+    private String fullName;
+    private String phone;
+    private Long categoryId;
+    private List<String> mediaUrls;
 
-    // Constructor
-    public PostDTO(Long id, String title, String address, Double price, Double roomSize, String description,
-                   String images, String videos, String expiredDate, UserDTO user, CategoryDTO category) {
-        this.id = id;
-        this.title = title;
-        this.address = address;
-        this.price = price;
-        this.roomSize = roomSize;
-        this.description = description;
-        this.images = images;
-        this.videos = videos;
-        this.expiredDate = expiredDate;
-        this.user = user;
-        this.category = category;
-    }
-
-    // Getter và Setter cho id
     public Long getId() {
         return id;
     }
@@ -40,7 +31,6 @@ public class PostDTO {
         this.id = id;
     }
 
-    // Getter và Setter cho title
     public String getTitle() {
         return title;
     }
@@ -49,7 +39,6 @@ public class PostDTO {
         this.title = title;
     }
 
-    // Getter và Setter cho address
     public String getAddress() {
         return address;
     }
@@ -58,7 +47,6 @@ public class PostDTO {
         this.address = address;
     }
 
-    // Getter và Setter cho price
     public Double getPrice() {
         return price;
     }
@@ -67,7 +55,6 @@ public class PostDTO {
         this.price = price;
     }
 
-    // Getter và Setter cho roomSize
     public Double getRoomSize() {
         return roomSize;
     }
@@ -76,7 +63,6 @@ public class PostDTO {
         this.roomSize = roomSize;
     }
 
-    // Getter và Setter cho description
     public String getDescription() {
         return description;
     }
@@ -85,48 +71,52 @@ public class PostDTO {
         this.description = description;
     }
 
-    // Getter và Setter cho images
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
-    }
-
-    // Getter và Setter cho videos
-    public String getVideos() {
-        return videos;
-    }
-
-    public void setVideos(String videos) {
-        this.videos = videos;
-    }
-
-    // Getter và Setter cho expiredDate
-    public String getExpiredDate() {
+    public LocalDate getExpiredDate() {
         return expiredDate;
     }
 
-    public void setExpiredDate(String expiredDate) {
+    public void setExpiredDate(LocalDate expiredDate) {
         this.expiredDate = expiredDate;
     }
 
-    // Getter và Setter cho user
-    public UserDTO getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    // Getter và Setter cho category
-    public CategoryDTO getCategory() {
-        return category;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setCategory(CategoryDTO category) {
-        this.category = category;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public List<String> getMediaUrls() {
+        return mediaUrls;
+    }
+
+    public void setMediaUrls(List<String> mediaUrls) {
+        this.mediaUrls = mediaUrls;
     }
 }
+
