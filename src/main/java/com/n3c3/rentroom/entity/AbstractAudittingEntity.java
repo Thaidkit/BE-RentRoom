@@ -14,7 +14,7 @@ public abstract class AbstractAudittingEntity {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDate createAt;
+    private LocalDate createAt = LocalDate.now();
 
     public LocalDate getCreateAt() {
         return createAt;
@@ -34,5 +34,5 @@ public abstract class AbstractAudittingEntity {
 
     @LastModifiedDate
     @Column(name = "modified_at", nullable = false, updatable = false)
-    private LocalDate modifyAt;
+    private LocalDate modifyAt = LocalDate.now();
 }

@@ -3,8 +3,8 @@ package com.n3c3.rentroom.repository.criteria;
 public class PostSearchCriteria {
     private String title;
     private String address;
-    private Double minPrice;
-    private Double maxPrice;
+    private Long minPrice;
+    private Long maxPrice;
     private Double minRoomSize;
     private Double maxRoomSize;
     private String fullName;
@@ -27,19 +27,19 @@ public class PostSearchCriteria {
         this.address = address;
     }
 
-    public Double getMinPrice() {
+    public Long getMinPrice() {
         return minPrice;
     }
 
-    public void setMinPrice(Double minPrice) {
+    public void setMinPrice(Long minPrice) {
         this.minPrice = minPrice;
     }
 
-    public Double getMaxPrice() {
+    public Long getMaxPrice() {
         return maxPrice;
     }
 
-    public void setMaxPrice(Double maxPrice) {
+    public void setMaxPrice(Long maxPrice) {
         this.maxPrice = maxPrice;
     }
 

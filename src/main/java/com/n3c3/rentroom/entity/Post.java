@@ -25,7 +25,7 @@ public class Post extends AbstractAudittingEntity {
     private String address;
 
     @Column(name = "price", nullable = false)
-    private Double price;
+    private Long price;
 
     @Column(name = "room_size", nullable = false)
     private Double roomSize;
@@ -74,11 +74,11 @@ public class Post extends AbstractAudittingEntity {
         this.address = address;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 

@@ -1,9 +1,6 @@
 package com.n3c3.rentroom.controller;
 
-import com.n3c3.rentroom.dto.CategoryDTO;
-import com.n3c3.rentroom.dto.PostDTO;
-import com.n3c3.rentroom.dto.PostSearchDTO;
-import com.n3c3.rentroom.dto.UserDTO;
+import com.n3c3.rentroom.dto.*;
 import com.n3c3.rentroom.entity.Post;
 import com.n3c3.rentroom.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ public class PostController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createPost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity<?> createPost(@RequestBody PostCreateDTO postDTO) {
         return postService.createPost(postDTO);
     }
 
@@ -48,10 +45,17 @@ public class PostController {
     }
 
     // Search bài đăng đa điều kiện
-    @PostMapping("/search")
+    @PostMapping("/search-filter")
     public ResponseEntity<?> searchPosts(@RequestBody PostSearchDTO postSearchDTO) {
         return postService.searchPostWithMultiConditions(postSearchDTO);
+    }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchPosts(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return postService.searchPostByKeyword(keyword, page, size);
     }
 
     // Delete a Post

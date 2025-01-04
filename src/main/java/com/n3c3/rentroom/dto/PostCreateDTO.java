@@ -1,6 +1,5 @@
 package com.n3c3.rentroom.dto;
 
-import com.n3c3.rentroom.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -9,14 +8,15 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDTO {
+public class PostCreateDTO {
     private Long id;
     private String title;
     private String address;
     private Long price;
     private Double roomSize;
     private String description;
-    private LocalDate expiredDate;
+    private Integer amountExpiredDays;
+    private Long feeToPost;
     private Long userId;
     private String fullName;
     private String phone;
@@ -71,12 +71,20 @@ public class PostDTO {
         this.description = description;
     }
 
-    public LocalDate getExpiredDate() {
-        return expiredDate;
+    public Integer getAmountExpiredDays() {
+        return amountExpiredDays;
     }
 
-    public void setExpiredDate(LocalDate expiredDate) {
-        this.expiredDate = expiredDate;
+    public void setAmountExpiredDays(Integer amountExpiredDays) {
+        this.amountExpiredDays = amountExpiredDays;
+    }
+
+    public Long getFeeToPost() {
+        return feeToPost;
+    }
+
+    public void setFeeToPost(Long feeToPost) {
+        this.feeToPost = feeToPost;
     }
 
     public Long getUserId() {
@@ -119,4 +127,3 @@ public class PostDTO {
         this.mediaUrls = mediaUrls;
     }
 }
-

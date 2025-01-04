@@ -1,6 +1,7 @@
 package com.n3c3.rentroom.service;
 
 import com.n3c3.rentroom.dto.ObjectResponse;
+import com.n3c3.rentroom.dto.PostCreateDTO;
 import com.n3c3.rentroom.dto.PostDTO;
 import com.n3c3.rentroom.dto.PostSearchDTO;
 import com.n3c3.rentroom.entity.Category;
@@ -54,7 +55,7 @@ public class PostService {
         this.mediaRepository = mediaRepository;
     }
 
-    public ResponseEntity<?> createPost(PostDTO postDTO) {
+    public ResponseEntity<?> createPost(PostCreateDTO postDTO) {
         try {
             Post post = new Post();
             post.setTitle(postDTO.getTitle());
@@ -62,26 +63,39 @@ public class PostService {
             post.setPrice(postDTO.getPrice());
             post.setRoomSize(postDTO.getRoomSize());
             post.setDescription(postDTO.getDescription());
-            post.setExpiredDate(postDTO.getExpiredDate());
+            post.setExpiredDate(LocalDate.now().plusDays(postDTO.getAmountExpiredDays()));
+            post.setCreateAt(LocalDate.now());
+            post.setModifyAt(LocalDate.now());
 
             // Gắn User và Category
             User user = userRepository.findById(postDTO.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
+
+            Long totalMoney = user.getTotalMoney();
+            if (totalMoney < postDTO.getFeeToPost()) {
+                return ResponseEntity.ok().body(new ObjectResponse(400, "You dont have enough money to post!", ""));
+            }
+            user.setTotalMoney(totalMoney - postDTO.getFeeToPost());
+            userRepository.save(user);
+
             post.setUser(user);
 
             Category category = categoryRepository.findById(postDTO.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found"));
             post.setCategory(category);
 
-            postRepository.save(post);
 
-            // Lưu Media
-            for (String mediaUrl : postDTO.getMediaUrls()) {
-                Media media = new Media();
-                media.setUrl(mediaUrl);
-                media.setPost(post);
-                mediaRepository.save(media);
-            }
+            List<Media> mediaList = postDTO.getMediaUrls().stream()
+                    .map(url -> {
+                        Media media = new Media();
+                        media.setUrl(url);
+                        media.setPost(post); // Liên kết với Post
+                        return media;
+                    })
+                    .collect(Collectors.toList());
+            post.setMedia(mediaList);
+
+            postRepository.save(post);
 
             return ResponseEntity.ok(new ObjectResponse(200, "Created post successfully!", post));
         } catch (Exception e) {
@@ -101,7 +115,10 @@ public class PostService {
             post.setRoomSize(postDTO.getRoomSize());
             post.setDescription(postDTO.getDescription());
             post.setExpiredDate(postDTO.getExpiredDate());
+            post.setModifyAt(LocalDate.now());
 
+            List<Media> mediaOldOfPost = mediaRepository.findAllByPostId(id);
+            mediaRepository.deleteAll(mediaOldOfPost);
             for (String mediaUrl : postDTO.getMediaUrls()) {
                 Media media = new Media();
                 media.setUrl(mediaUrl);
@@ -237,6 +254,32 @@ public class PostService {
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok().body(new ObjectResponse(200, "Posts fetched successfully!", postDTOs));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<?> searchPostByKeyword(String keyword, int pageNumber, int size) {
+        try {
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by("createAt").descending());
+
+            Specification<Post> spec = (root, query, criteriaBuilder) ->
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
+                            criteriaBuilder.like(root.get("description"), "%" + keyword + "%"),
+                            criteriaBuilder.like(root.get("address"), "%" + keyword + "%")
+                    );
+
+            Specification<Post> expiredFilterSpec = (root, query, criteriaBuilder) -> {
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("expiredDate"), LocalDate.now());
+            };
+
+            // Kết hợp các Specification (searchCriteria + expired filter)
+            Specification<Post> finalSpec = spec.and(expiredFilterSpec);
+
+            Page<Post> posts = postRepository.findAll(finalSpec, pageable);
+
+            return ResponseEntity.ok(new ObjectResponse(200, "Posts fetched successfully!", posts));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
         }
