@@ -10,7 +10,7 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "url", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "url", nullable = false, columnDefinition = "MEDIUMTEXT")
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
