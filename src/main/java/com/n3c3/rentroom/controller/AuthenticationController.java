@@ -3,6 +3,7 @@ package com.n3c3.rentroom.controller;
 import com.n3c3.rentroom.dto.LoginDTO;
 
 import com.n3c3.rentroom.dto.ObjectResponse;
+import com.n3c3.rentroom.dto.UserCreateDTO;
 import com.n3c3.rentroom.entity.User;
 import com.n3c3.rentroom.service.AuthenticateService;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        return authenticateService.register(user);
+    public ResponseEntity<?> registerUser(@RequestBody UserCreateDTO userCreateDTO) {
+        return authenticateService.register(userCreateDTO);
     }
 
 }

@@ -2,6 +2,8 @@ package com.n3c3.rentroom.service;
 
 import com.n3c3.rentroom.dto.LoginDTO;
 import com.n3c3.rentroom.dto.ObjectResponse;
+import com.n3c3.rentroom.dto.UserCreateDTO;
+import com.n3c3.rentroom.dto.UserDTO;
 import com.n3c3.rentroom.entity.Role;
 import com.n3c3.rentroom.entity.User;
 import com.n3c3.rentroom.repository.UserRepository;
@@ -54,17 +56,25 @@ public class AuthenticateService {
         }
     }
 
-    public ResponseEntity<?> register(User user) {
+    public ResponseEntity<?> register(UserCreateDTO userCreateDTO) {
         try {
-            if (userRepository.findByPhoneOrEmail(user.getPhone()) == null &&  userRepository.findByPhoneOrEmail(user.getEmail()) == null) {
-                user.setPassword(new BCryptPasswordEncoder(10).encode(user.getPassword()));
+            User user = new User();
+            if (userRepository.findByPhoneOrEmail(userCreateDTO.getPhone()) == null || userRepository.findByPhoneOrEmail(userCreateDTO.getEmail()) == null) {
+                user.setPhone(userCreateDTO.getPhone());
+                user.setEmail(userCreateDTO.getEmail());
+                user.setFullName(userCreateDTO.getFullName());
+                user.setImage(userCreateDTO.getImage());
+                user.setPassword(new BCryptPasswordEncoder(10).encode(userCreateDTO.getPassword()));
                 user.setRole(Role.USER);
                 user.setTotalMoney(0L);
                 user.setCreateAt(LocalDate.now());
                 user.setModifyAt(LocalDate.now());
                 userService.save(user);
-            }
-            return ResponseEntity.ok().body(new ObjectResponse(200, "User registered successfully", ""));
+
+                return ResponseEntity.ok().body(new ObjectResponse(200, "User registered successfully", user));
+            }else
+                return ResponseEntity.ok().body(new ObjectResponse(500, "User registered fail", "Email or phone existed"));
+
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ObjectResponse(400, "Bad request", e.getMessage()));
