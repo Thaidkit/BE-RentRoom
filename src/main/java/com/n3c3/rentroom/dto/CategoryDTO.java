@@ -1,17 +1,18 @@
 package com.n3c3.rentroom.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class CategoryDTO {
-    private Long id;
+    private String categoryName;
 
-    // Constructor, getter và setter
-    public CategoryDTO(Long id) {
-        this.id = id;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
