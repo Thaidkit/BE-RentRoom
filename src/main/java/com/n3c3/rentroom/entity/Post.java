@@ -36,15 +36,22 @@ public class Post extends AbstractAudittingEntity {
     @Column(name = "expired_date")
     private LocalDate expiredDate;
 
+    @Column(name = "contact_phone", nullable = false)
+    private String contactPhone;
+
+    @Column(name = "contact_email", nullable = false)
+    private String contactEmail;
+
+    @Column(name = "link")
+    private String link;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference
-    private Category category;
+    @Column(name = "category", nullable = false)
+    private String category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -106,6 +113,30 @@ public class Post extends AbstractAudittingEntity {
         this.expiredDate = expiredDate;
     }
 
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     public User getUser() {
         return user;
     }
@@ -114,11 +145,11 @@ public class Post extends AbstractAudittingEntity {
         this.user = user;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

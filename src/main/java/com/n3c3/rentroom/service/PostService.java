@@ -4,19 +4,14 @@ import com.n3c3.rentroom.dto.ObjectResponse;
 import com.n3c3.rentroom.dto.PostCreateDTO;
 import com.n3c3.rentroom.dto.PostDTO;
 import com.n3c3.rentroom.dto.PostSearchDTO;
-import com.n3c3.rentroom.entity.Category;
 import com.n3c3.rentroom.entity.Media;
 import com.n3c3.rentroom.entity.Post;
 import com.n3c3.rentroom.entity.User;
-import com.n3c3.rentroom.repository.CategoryRepository;
 import com.n3c3.rentroom.repository.MediaRepository;
 import com.n3c3.rentroom.repository.PostRepository;
 import com.n3c3.rentroom.repository.UserRepository;
 import com.n3c3.rentroom.repository.criteria.PostSearchCriteria;
 import com.n3c3.rentroom.repository.specification.PostSpecification;
-import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,16 +34,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
     private final MediaRepository mediaRepository;
 
     public PostService(PostRepository postRepository,
                        UserRepository userRepository,
-                       CategoryRepository categoryRepository,
                        MediaRepository mediaRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
         this.mediaRepository = mediaRepository;
     }
 
@@ -63,6 +52,10 @@ public class PostService {
             post.setPrice(postDTO.getPrice());
             post.setRoomSize(postDTO.getRoomSize());
             post.setDescription(postDTO.getDescription());
+            post.setLink(postDTO.getLink());
+            post.setCategory(postDTO.getCategory());
+            post.setContactPhone(postDTO.getContactPhone());
+            post.setContactEmail(postDTO.getContactEmail());
             post.setExpiredDate(LocalDate.now().plusDays(postDTO.getAmountExpiredDays()));
             post.setCreateAt(LocalDate.now());
             post.setModifyAt(LocalDate.now());
@@ -79,11 +72,6 @@ public class PostService {
             userRepository.save(user);
 
             post.setUser(user);
-
-            Category category = categoryRepository.findById(postDTO.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            post.setCategory(category);
-
 
             List<Media> mediaList = postDTO.getMediaUrls().stream()
                     .map(url -> {
@@ -116,6 +104,10 @@ public class PostService {
             post.setDescription(postDTO.getDescription());
             post.setExpiredDate(postDTO.getExpiredDate());
             post.setModifyAt(LocalDate.now());
+            post.setContactPhone(postDTO.getContactPhone());
+            post.setContactEmail(postDTO.getContactEmail());
+            post.setCategory(postDTO.getCategory());
+            post.setLink(postDTO.getLink());
 
             List<Media> mediaOldOfPost = mediaRepository.findAllByPostId(id);
             mediaRepository.deleteAll(mediaOldOfPost);
@@ -196,8 +188,7 @@ public class PostService {
             searchCriteria.setMaxPrice(searchDTO.getMaxPrice());
             searchCriteria.setMinRoomSize(searchDTO.getMinRoomSize());
             searchCriteria.setMaxRoomSize(searchDTO.getMaxRoomSize());
-            searchCriteria.setFullName(searchDTO.getFullName());
-            searchCriteria.setPhone(searchDTO.getPhone());
+            searchCriteria.setCategory(searchDTO.getCategory());
 
             // Tạo Specification từ SearchCriteria
             PostSpecification spec = new PostSpecification(searchCriteria);
@@ -236,8 +227,10 @@ public class PostService {
                         dto.setPrice(post.getPrice());
                         dto.setRoomSize(post.getRoomSize());
                         dto.setDescription(post.getDescription());
-                        dto.setCategoryId(post.getCategory().getId());
-
+                        dto.setCategory(post.getCategory());
+                        dto.setContactEmail(post.getContactEmail());
+                        dto.setContactPhone(post.getContactPhone());
+                        dto.setLink(post.getLink());
                         dto.setExpiredDate(post.getExpiredDate());
                         dto.setUserId(post.getUser().getId());
                         dto.setFullName(post.getUser().getFullName());
@@ -267,7 +260,8 @@ public class PostService {
                     criteriaBuilder.or(
                             criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
                             criteriaBuilder.like(root.get("description"), "%" + keyword + "%"),
-                            criteriaBuilder.like(root.get("address"), "%" + keyword + "%")
+                            criteriaBuilder.like(root.get("address"), "%" + keyword + "%"),
+                            criteriaBuilder.like(root.get("category"), "%" + keyword + "%")
                     );
 
             Specification<Post> expiredFilterSpec = (root, query, criteriaBuilder) -> {

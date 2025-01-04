@@ -68,7 +68,6 @@ public class SecurityConfiguration {
                 .requestMatchers(API_PUBLIC).permitAll()
                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "api/v1/posts/search-filter").permitAll()
-                .requestMatchers("api/v1/categories/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

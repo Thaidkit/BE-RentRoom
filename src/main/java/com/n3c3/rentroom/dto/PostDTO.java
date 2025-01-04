@@ -20,7 +20,10 @@ public class PostDTO {
     private Long userId;
     private String fullName;
     private String phone;
-    private Long categoryId;
+    private String category;
+    private String contactPhone;
+    private String contactEmail;
+    private String link;
     private List<String> mediaUrls;
 
     public Long getId() {
@@ -103,12 +106,36 @@ public class PostDTO {
         this.phone = phone;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public List<String> getMediaUrls() {

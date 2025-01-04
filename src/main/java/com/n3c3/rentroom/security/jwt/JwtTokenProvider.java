@@ -29,6 +29,7 @@ public class JwtTokenProvider {
         claims.put("id", userDetails.getId());
         claims.put("phone", userDetails.getPhone());
         claims.put("role", userDetails.getAuthorities());
+        claims.put("fullName", userDetails.getFullName());
         return createToken(claims, String.valueOf(userDetails.getUsername()));
     }
 

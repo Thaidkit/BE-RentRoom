@@ -7,8 +7,7 @@ public class PostSearchCriteria {
     private Long maxPrice;
     private Double minRoomSize;
     private Double maxRoomSize;
-    private String fullName;
-    private String phone;
+    private String category;
 
     // Getters and Setters
     public String getTitle() {
@@ -59,19 +58,11 @@ public class PostSearchCriteria {
         this.maxRoomSize = maxRoomSize;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getCategory() {
+        return category;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

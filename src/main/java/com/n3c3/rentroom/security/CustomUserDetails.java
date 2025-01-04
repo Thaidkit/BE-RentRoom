@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class CustomUserDetails implements UserDetails {
     private Long id;
     private String username;
+    private String fullName;
     private String phone;
     private String password;
     private List<GrantedAuthority> authorities;
@@ -21,6 +22,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user) {
         this.id = user.getId();
         this.username = user.getEmail();
+        this.fullName = user.getFullName();
         this.phone = user.getPhone();
         this.password = user.getPassword();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
@@ -101,5 +103,13 @@ public class CustomUserDetails implements UserDetails {
 
     public void setAuthorities(List<GrantedAuthority> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }

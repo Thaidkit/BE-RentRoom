@@ -1,7 +1,5 @@
 package com.n3c3.rentroom.dto;
 
-import java.time.LocalDate;
-
 public class PostSearchDTO {
     private String title;
     private String address;
@@ -9,8 +7,7 @@ public class PostSearchDTO {
     private Long maxPrice;
     private Double minRoomSize;
     private Double maxRoomSize;
-    private String fullName;
-    private String phone;
+    private String category;
     private int page = 0;
     private int size = 10;
     private String sortBy = "createdAt";
@@ -64,22 +61,6 @@ public class PostSearchDTO {
         this.maxRoomSize = maxRoomSize;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public int getPage() {
         return page;
     }
@@ -110,5 +91,13 @@ public class PostSearchDTO {
 
     public void setSortDirection(String sortDirection) {
         this.sortDirection = sortDirection;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -42,11 +42,8 @@ public class PostSpecification implements Specification<Post> {
         if (criteria.getMaxRoomSize() != null) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("roomSize"), criteria.getMaxRoomSize()));
         }
-        if (criteria.getFullName() != null) {
-            predicates.add(criteriaBuilder.like(root.get("user").get("fullName"), "%" + criteria.getFullName() + "%"));
-        }
-        if (criteria.getPhone() != null) {
-            predicates.add(criteriaBuilder.like(root.get("user").get("phone"), "%" + criteria.getPhone() + "%"));
+        if (criteria.getCategory() != null) {
+            predicates.add(criteriaBuilder.equal(root.get("category"), criteria.getCategory()));
         }
 
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("expiredDate"), LocalDate.now()));
