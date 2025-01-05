@@ -44,6 +44,14 @@ public class PostController {
         return postService.getPostById(id);
     }
 
+    // api lấy bài viết của 1 user
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getPostByUserId(@PathVariable Long id,
+                                             @RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(defaultValue = "10") int size){
+        return postService.getALLPostByUserId(id, pageNumber, size);
+    }
+
     // Search bài đăng đa điều kiện
     @PostMapping("/search-filter")
     public ResponseEntity<?> searchPosts(@RequestBody PostSearchDTO postSearchDTO) {
@@ -59,7 +67,7 @@ public class PostController {
     }
 
     @GetMapping("/search-map")
-    public ResponseEntity<?> getAllAddress(@RequestParam String keyword) {
+    public ResponseEntity<?> getAllAddressByKeyWord(@RequestParam(defaultValue = "") String keyword) {
         return postService.getAllAddress(keyword);
     }
 
@@ -68,11 +76,6 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         return postService.deletePost(id);
     }
-
-
-
-
-
 }
 
 

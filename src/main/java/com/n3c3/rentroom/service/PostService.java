@@ -1,9 +1,6 @@
 package com.n3c3.rentroom.service;
 
-import com.n3c3.rentroom.dto.ObjectResponse;
-import com.n3c3.rentroom.dto.PostCreateDTO;
-import com.n3c3.rentroom.dto.PostDTO;
-import com.n3c3.rentroom.dto.PostSearchDTO;
+import com.n3c3.rentroom.dto.*;
 import com.n3c3.rentroom.entity.Media;
 import com.n3c3.rentroom.entity.Post;
 import com.n3c3.rentroom.entity.User;
@@ -12,6 +9,7 @@ import com.n3c3.rentroom.repository.PostRepository;
 import com.n3c3.rentroom.repository.UserRepository;
 import com.n3c3.rentroom.repository.criteria.PostSearchCriteria;
 import com.n3c3.rentroom.repository.specification.PostSpecification;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -134,6 +133,31 @@ public class PostService {
             return ResponseEntity.ok().body(new ObjectResponse(200, "Fetched post successfully!", post));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching post!", e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<?> getALLPostByUserId(Long userId, int pageNumber, int size) {
+        try {
+          if (!userRepository.findById(userId).isPresent()) {
+              return ResponseEntity.status(404).body(new ObjectResponse(404, "User not found", ""));
+          }
+
+            // Tạo Pageable để phân trang
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by("createAt").descending());
+
+            // Tạo Specification để lọc bài viết có expiredDate >= ngày hiện tại
+            Specification<Post> spec = (root, query, criteriaBuilder) -> {
+                Predicate byUserId = criteriaBuilder.equal(root.get("user").get("id"), userId);
+                return criteriaBuilder.and(byUserId);
+            };
+
+            Page<Post> postsOfUser = postRepository.findAll(spec, pageable);
+
+            log.info("23232323");
+            return ResponseEntity.ok(new ObjectResponse(200, "Posts fetched successfully!", postsOfUser));
+        } catch (Exception e) {
+            log.info("Error: " + e.getMessage());
+            return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
         }
     }
 
@@ -296,8 +320,16 @@ public class PostService {
             Specification<Post> finalSpec = spec.and(expiredFilterSpec);
 
             List<Post> posts = postRepository.findAll(finalSpec);
+            List<AddressPostSearchMapDTO> addressPostSearchMapDTOList = new ArrayList<>();
+            posts.stream().forEach(post -> {
+                AddressPostSearchMapDTO addressPostSearchMapDTO = new AddressPostSearchMapDTO();
+                addressPostSearchMapDTO.setId(post.getId());
+                addressPostSearchMapDTO.setTitle(post.getTitle());
+                addressPostSearchMapDTO.setAddress(post.getAddress());
+                addressPostSearchMapDTOList.add(addressPostSearchMapDTO);
+            });
 
-            return ResponseEntity.ok(new ObjectResponse(200, "Posts fetched successfully!", posts));
+            return ResponseEntity.ok(new ObjectResponse(200, "Posts fetched successfully!", addressPostSearchMapDTOList));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
         }
