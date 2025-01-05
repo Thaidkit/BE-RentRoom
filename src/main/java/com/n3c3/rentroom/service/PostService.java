@@ -278,4 +278,28 @@ public class PostService {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
         }
     }
+
+    public ResponseEntity<?> getAllAddress(String keyword) {
+        try {
+            Specification<Post> spec = (root, query, criteriaBuilder) ->
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
+                            criteriaBuilder.like(root.get("description"), "%" + keyword + "%"),
+                            criteriaBuilder.like(root.get("address"), "%" + keyword + "%"),
+                            criteriaBuilder.like(root.get("category"), "%" + keyword + "%")
+                    );
+
+            Specification<Post> expiredFilterSpec = (root, query, criteriaBuilder) -> {
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("expiredDate"), LocalDate.now());
+            };
+
+            Specification<Post> finalSpec = spec.and(expiredFilterSpec);
+
+            List<Post> posts = postRepository.findAll(finalSpec);
+
+            return ResponseEntity.ok(new ObjectResponse(200, "Posts fetched successfully!", posts));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
+        }
+    }
 }

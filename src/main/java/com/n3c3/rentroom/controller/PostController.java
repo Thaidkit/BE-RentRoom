@@ -58,6 +58,11 @@ public class PostController {
         return postService.searchPostByKeyword(keyword, page, size);
     }
 
+    @GetMapping("/search-map")
+    public ResponseEntity<?> getAllAddress(@RequestParam String keyword) {
+        return postService.getAllAddress(keyword);
+    }
+
     // Delete a Post
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
