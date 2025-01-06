@@ -10,6 +10,7 @@ public class AddressPostSearchMapDTO {
     private Long id;
     private String title;
     private String address;
+    private String imgUrl;
 
     public Long getId() {
         return id;
@@ -33,5 +34,13 @@ public class AddressPostSearchMapDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

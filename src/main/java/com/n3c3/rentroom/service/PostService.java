@@ -326,6 +326,11 @@ public class PostService {
                 addressPostSearchMapDTO.setId(post.getId());
                 addressPostSearchMapDTO.setTitle(post.getTitle());
                 addressPostSearchMapDTO.setAddress(post.getAddress());
+                String imgUrl = post.getMedia().stream()
+                        .findFirst()
+                        .map(Media::getUrl)
+                        .orElse(null);
+                addressPostSearchMapDTO.setImgUrl(imgUrl);                
                 addressPostSearchMapDTOList.add(addressPostSearchMapDTO);
             });
 
