@@ -43,6 +43,9 @@ public class User extends AbstractAudittingEntity {
     @Column(name = "total_money")
     private Long totalMoney;
 
+    @OneToOne(mappedBy = "user")
+    private OTP otp;
+
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

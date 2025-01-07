@@ -9,14 +9,27 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   datasource:
+#    url: jdbc:mysql://192.168.0.103:3306/rent-room
+#    username: thai
+#    password: Thaimeo2003@
     url: jdbc:mysql://localhost:3306/rent-room
     username: root
 #    password: thaimeo2003
     password: 123456
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "phamnhatminh305203@gmail.com"
+    password: "nrmr vece brjo rmij"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker

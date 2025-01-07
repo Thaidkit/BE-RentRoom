@@ -66,6 +66,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(API_PUBLIC).permitAll()
+                .requestMatchers("api/v1/forgotPassword/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "api/v1/posts/search-filter").permitAll()
                 .anyRequest().authenticated()
