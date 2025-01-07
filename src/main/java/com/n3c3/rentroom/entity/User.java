@@ -48,6 +48,7 @@ public class User extends AbstractAudittingEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
@@ -130,5 +131,13 @@ public class User extends AbstractAudittingEntity {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public OTP getOtp() {
+        return otp;
+    }
+
+    public void setOtp(OTP otp) {
+        this.otp = otp;
     }
 }
