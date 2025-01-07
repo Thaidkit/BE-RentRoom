@@ -10,6 +10,7 @@ import com.n3c3.rentroom.repository.UserRepository;
 import com.n3c3.rentroom.security.CustomUserDetailService;
 import com.n3c3.rentroom.security.CustomUserDetails;
 import com.n3c3.rentroom.security.jwt.JwtTokenProvider;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -41,7 +42,7 @@ public class AuthenticateService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<?> authenticate(LoginDTO login) throws Exception {
+    public ResponseEntity<?> authenticate(LoginDTO login) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword())
@@ -52,9 +53,14 @@ public class AuthenticateService {
 
             return ResponseEntity.ok().body(new ObjectResponse(200, "Login successfully!", jwt));
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ObjectResponse(401, "Incorrect username or password", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ObjectResponse(500, "Authentication failed", e.getMessage()));
         }
     }
+
 
     public ResponseEntity<?> register(UserCreateDTO userCreateDTO) {
         try {
