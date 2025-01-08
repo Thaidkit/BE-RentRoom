@@ -1,13 +1,19 @@
 package com.n3c3.rentroom.service;
 
+import com.n3c3.rentroom.dto.ObjectResponse;
+import com.n3c3.rentroom.dto.UserDTO;
 import com.n3c3.rentroom.entity.User;
 import com.n3c3.rentroom.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
+    private UserRepository userRepository;
 
-    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -17,4 +23,72 @@ public class UserService {
         return userRepository.save(user);
 
     }
+
+
+    public ResponseEntity<?> updateUserInfor(Long userId, UserDTO userDTO) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+            // Kiểm tra mật khẩu hiện tại
+            if (!passwordEncoder.matches(userDTO.getCurrentPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("\n" +
+                        "Current password is incorrect");
+            }
+
+            // Kiểm tra mật khẩu mới và xác nhận
+            if (userDTO.getNewPassword() != null &&
+                    !userDTO.getNewPassword().isEmpty() &&
+                    !userDTO.getNewPassword().equals(userDTO.getConfirmPassword())) {
+                throw new IllegalArgumentException("The new password and confirmation password do not match");
+            }
+
+            // Cập nhật thông tin
+            user.setEmail(userDTO.getEmail());
+            user.setFullName(userDTO.getFullName());
+            user.setPhone(userDTO.getPhone());
+
+            // Cập nhật mật khẩu mới
+            if (userDTO.getNewPassword() != null && !userDTO.getNewPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDTO.getNewPassword()));
+            }
+
+            User updatedUser = userRepository.save(user);
+
+            // Phản hồi thành công
+            return ResponseEntity.ok(new ObjectResponse(200, "Updated user information successfully!", updatedUser));
+        } catch (IllegalArgumentException e) {
+            // Phản hồi lỗi hợp lệ (400)
+            return ResponseEntity.status(400).body(new ObjectResponse(400, e.getMessage(), null));
+        } catch (Exception e) {
+            // Phản hồi lỗi hệ thống (500)
+            return ResponseEntity.status(500).body(new ObjectResponse(500, "System error when updating user information!", e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<ObjectResponse> getUserById(Long id) {
+        try {
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
+
+            // Tạo đối tượng UserDTO
+            UserDTO userDTO = new UserDTO();
+            userDTO.setEmail(user.getEmail());
+            userDTO.setFullName(user.getFullName());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setCurrentPassword(null); // currentPassword (Chưa có giá trị khi lấy thông tin user)
+            userDTO.setNewPassword(null);     // newPassword (Chưa có giá trị khi lấy thông tin user)
+            userDTO.setConfirmPassword(null); // confirmPassword (Chưa có giá trị khi lấy thông tin user)
+
+
+            return ResponseEntity.ok().body(new ObjectResponse(200, "Fetched user successfully!", userDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching user!", e.getMessage()));
+        }
+    }
+
+
+
 }
