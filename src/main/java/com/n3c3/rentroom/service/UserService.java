@@ -72,18 +72,7 @@ public class UserService {
         try {
             User user = userRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
-
-            // Tạo đối tượng UserDTO
-            UserDTO userDTO = new UserDTO();
-            userDTO.setEmail(user.getEmail());
-            userDTO.setFullName(user.getFullName());
-            userDTO.setPhone(user.getPhone());
-            userDTO.setCurrentPassword(null); // currentPassword (Chưa có giá trị khi lấy thông tin user)
-            userDTO.setNewPassword(null);     // newPassword (Chưa có giá trị khi lấy thông tin user)
-            userDTO.setConfirmPassword(null); // confirmPassword (Chưa có giá trị khi lấy thông tin user)
-
-
-            return ResponseEntity.ok().body(new ObjectResponse(200, "Fetched user successfully!", userDTO));
+            return ResponseEntity.ok().body(new ObjectResponse(200, "Fetched user successfully!", user));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching user!", e.getMessage()));
         }

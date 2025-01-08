@@ -34,5 +34,10 @@ public class AuthenticationController {
     public ResponseEntity<?> registerUser(@RequestBody UserCreateDTO userCreateDTO) {
         return authenticateService.register(userCreateDTO);
     }
+    @PostMapping("/verifyRegister/{otp}/{email}")
+    public ResponseEntity<ObjectResponse> verifyAndActivateAccount(@PathVariable Integer otp,
+                                                                   @PathVariable String email) {
+        return authenticateService.verifyAndActivateAccount(otp, email);
+    }
 
 }
