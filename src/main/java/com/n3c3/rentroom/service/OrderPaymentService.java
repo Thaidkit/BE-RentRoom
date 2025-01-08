@@ -154,6 +154,9 @@ public class OrderPaymentService {
                 {
                     case "paid":
                         User user = userRepository.findById(orderPayment.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+                        if (orderPayment.getStatusPayment().equals(StatusPayment.SUCCESS)){
+                            return ResponseEntity.status(200).body(new ObjectResponse(200, "Order payment was updated", ""));
+                        }
                         user.setTotalMoney(user.getTotalMoney()+orderPayment.getAmountPayment());
                         userRepository.save(user);
 
