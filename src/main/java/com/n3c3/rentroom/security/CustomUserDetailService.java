@@ -21,6 +21,9 @@ public class CustomUserDetailService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(value);
         }
+        if (user.isActived() == Boolean.FALSE) {
+            throw new RuntimeException("User is not actived");
+        }
         return new CustomUserDetails(user);
     }
 

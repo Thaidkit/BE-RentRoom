@@ -64,7 +64,7 @@ public class AuthenticateService {
                     .body(new ObjectResponse(401, "Incorrect username or password", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ObjectResponse(500, "Authentication failed", e.getMessage()));
+                    .body(new ObjectResponse(500, "Authentication failed: " + e.getMessage(), ""));
         }
     }
 
