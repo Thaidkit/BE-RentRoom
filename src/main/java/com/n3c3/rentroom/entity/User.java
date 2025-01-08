@@ -35,7 +35,7 @@ public class User extends AbstractAudittingEntity {
     private String password;
 
     @Column(name = "is_actived")
-    private boolean isActived = Boolean.TRUE;
+    private boolean isActived = Boolean.FALSE;
 
     @Column(name = "image")
     private String image;

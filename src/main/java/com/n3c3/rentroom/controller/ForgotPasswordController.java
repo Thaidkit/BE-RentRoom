@@ -44,7 +44,7 @@ public class ForgotPasswordController {
 
             int genOtp = otpGeneration();
 
-            MailBody mailBody = new MailBody(email, "OTP cho yêu cầu Quên mật khẩu", "Đây là OTP cho yêu cầu Quên mật khẩu của bạn: " + genOtp);
+            MailBody mailBody = new MailBody(email, "OTP Verification", "Đây là OTP cho yêu cầu Quên mật khẩu của bạn: " + genOtp);
 
             OTP otp = new OTP();
             otp.setOtp(genOtp);
