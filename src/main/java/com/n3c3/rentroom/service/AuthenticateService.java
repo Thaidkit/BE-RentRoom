@@ -3,7 +3,6 @@ package com.n3c3.rentroom.service;
 import com.n3c3.rentroom.dto.LoginDTO;
 import com.n3c3.rentroom.dto.ObjectResponse;
 import com.n3c3.rentroom.dto.UserCreateDTO;
-import com.n3c3.rentroom.dto.UserDTO;
 import com.n3c3.rentroom.entity.Role;
 import com.n3c3.rentroom.entity.User;
 import com.n3c3.rentroom.repository.UserRepository;

@@ -28,7 +28,10 @@ public class SecurityConfiguration {
     private final String[] API_PUBLIC = {
             "/authenticate",
             "/register",
-            "/logout"
+            "/logout",
+            "/api/v1/forgotPassword/**",
+            "/api/v1/payment/**",
+            "/confirm-webhook/**"
     };
 
 
@@ -48,7 +51,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3003", "http://localhost:3000/**", "http://localhost:3003/**"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3003", "http://localhost:3000/**", "http://localhost:3003/**", "https://api-merchant.payos.vn/**"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization"));
@@ -66,10 +69,9 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(API_PUBLIC).permitAll()
-                .requestMatchers("api/v1/forgotPassword/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "api/v1/posts/search-filter").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/posts/search-filter").permitAll()
+                .requestMatchers("/api/v1/**").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

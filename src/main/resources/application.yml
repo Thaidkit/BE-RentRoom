@@ -51,6 +51,14 @@ rent-room:
     secret-key: +J6G0rkBWSO8fyrxnyuYv8tQinxzumkNrBHG30YvcX8PdW/ZkqcG6/XfwNijxuDQD16HFCedsxB8SbsM2s4Paw==
     # 2 weeks in second
     token-expiration: 1209600
+  payos:
+    client-id: e2a17346-c7d3-431e-9d7e-8be066304573
+    api-key: 23b5ec2f-172d-4e90-98a0-37b2bfeb79e2
+    checksum-key: 59ca88278f9d56e1e5d27665fe36de3da117cff04e4ed81848851e67143b65cd
+  domain: "http://localhost:3000"
+
+
+
 
 
 

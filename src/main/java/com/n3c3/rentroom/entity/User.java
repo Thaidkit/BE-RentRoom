@@ -53,6 +53,10 @@ public class User extends AbstractAudittingEntity {
     @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<OrderPayment> orderPaymentList = new ArrayList<>();
+
     public Long getId() {
         return id;
     }

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -45,6 +46,17 @@ public class PostService {
 
     public ResponseEntity<?> createPost(PostCreateDTO postDTO) {
         try {
+
+            User user = userRepository.findById(postDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            Long totalMoney = user.getTotalMoney();
+            if (totalMoney < postDTO.getFeeToPost()) {
+                return ResponseEntity.status(500).body(new ObjectResponse(500, "You dont have enough money to post!", ""));
+            }
+            user.setTotalMoney(totalMoney - postDTO.getFeeToPost());
+            userRepository.save(user);
+
             Post post = new Post();
             post.setTitle(postDTO.getTitle());
             post.setAddress(postDTO.getAddress());
@@ -58,17 +70,6 @@ public class PostService {
             post.setExpiredDate(LocalDate.now().plusDays(postDTO.getAmountExpiredDays()));
             post.setCreateAt(LocalDate.now());
             post.setModifyAt(LocalDate.now());
-
-            // Gắn User và Category
-            User user = userRepository.findById(postDTO.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            Long totalMoney = user.getTotalMoney();
-            if (totalMoney < postDTO.getFeeToPost()) {
-                return ResponseEntity.ok().body(new ObjectResponse(400, "You dont have enough money to post!", ""));
-            }
-            user.setTotalMoney(totalMoney - postDTO.getFeeToPost());
-            userRepository.save(user);
 
             post.setUser(user);
 
@@ -124,6 +125,7 @@ public class PostService {
         }
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<ObjectResponse> getPostById(Long id) {
         try {
 
@@ -136,6 +138,7 @@ public class PostService {
         }
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> getALLPostByUserId(Long userId, int pageNumber, int size) {
         try {
           if (!userRepository.findById(userId).isPresent()) {
@@ -175,6 +178,7 @@ public class PostService {
         }
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> getAllPosts(int pageNumber, int size) {
         try {
             // Kiểm tra các tham số pageNumber và size hợp lệ
@@ -201,7 +205,7 @@ public class PostService {
         }
     }
 
-
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> searchPostWithMultiConditions(PostSearchDTO searchDTO) {
         try {
             // Tạo SearchCriteria từ các tham số tìm kiếm trong searchDTO
@@ -276,6 +280,7 @@ public class PostService {
         }
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> searchPostByKeyword(String keyword, int pageNumber, int size) {
         try {
             Pageable pageable = PageRequest.of(pageNumber, size, Sort.by("createAt").descending());
@@ -303,6 +308,7 @@ public class PostService {
         }
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     public ResponseEntity<?> getAllAddress(String keyword) {
         try {
             Specification<Post> spec = (root, query, criteriaBuilder) ->
