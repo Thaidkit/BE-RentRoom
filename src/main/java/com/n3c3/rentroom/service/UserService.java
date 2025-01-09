@@ -32,27 +32,30 @@ public class UserService {
 
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-            // Kiểm tra mật khẩu hiện tại
-            if (!passwordEncoder.matches(userDTO.getCurrentPassword(), user.getPassword())) {
-                throw new IllegalArgumentException("\n" +
-                        "Current password is incorrect");
-            }
-
-            // Kiểm tra mật khẩu mới và xác nhận
-            if (userDTO.getNewPassword() != null &&
-                    !userDTO.getNewPassword().isEmpty() &&
-                    !userDTO.getNewPassword().equals(userDTO.getConfirmPassword())) {
-                throw new IllegalArgumentException("The new password and confirmation password do not match");
-            }
-
-            // Cập nhật thông tin
-            user.setEmail(userDTO.getEmail());
-            user.setFullName(userDTO.getFullName());
-            user.setPhone(userDTO.getPhone());
-
-            // Cập nhật mật khẩu mới
+            // Kiểm tra mật khẩu hiện tại nếu mật khẩu mới được cung cấp
             if (userDTO.getNewPassword() != null && !userDTO.getNewPassword().isEmpty()) {
+                if (!passwordEncoder.matches(userDTO.getCurrentPassword(), user.getPassword())) {
+                    throw new IllegalArgumentException("Current password is incorrect");
+                }
+
+                // Kiểm tra mật khẩu mới và xác nhận
+                if (!userDTO.getNewPassword().equals(userDTO.getConfirmPassword())) {
+                    throw new IllegalArgumentException("The new password and confirmation password do not match");
+                }
+
+                // Cập nhật mật khẩu mới
                 user.setPassword(passwordEncoder.encode(userDTO.getNewPassword()));
+            }
+
+            // Cập nhật các trường khác chỉ khi chúng được cung cấp
+            if (userDTO.getEmail() != null && !userDTO.getEmail().isEmpty()) {
+                user.setEmail(userDTO.getEmail());
+            }
+            if (userDTO.getFullName() != null && !userDTO.getFullName().isEmpty()) {
+                user.setFullName(userDTO.getFullName());
+            }
+            if (userDTO.getPhone() != null && !userDTO.getPhone().isEmpty()) {
+                user.setPhone(userDTO.getPhone());
             }
 
             User updatedUser = userRepository.save(user);
@@ -67,6 +70,7 @@ public class UserService {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "System error when updating user information!", e.getMessage()));
         }
     }
+
 
     public ResponseEntity<ObjectResponse> getUserById(Long id) {
         try {
