@@ -39,7 +39,7 @@ public class ForgotPasswordController {
     @PostMapping("/verifyMail/{email}")
     public ResponseEntity<ObjectResponse> verifyEmail(@PathVariable String email) {
         try {
-            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found!"));
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Email ko tồn tại"));
 
             if (otpRepository.findOtpByEmail(email).isPresent()) {
                 OTP otp = otpRepository.findOtpByEmail(email).get();
@@ -49,7 +49,7 @@ public class ForgotPasswordController {
                 sendOtp(user);
             return ResponseEntity.ok().body(new ObjectResponse(200, "OTP resend successful", ""));
         } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().body(new ObjectResponse(500, "OTP resend fail: " + e.getMessage(), ""));
+            return ResponseEntity.internalServerError().body(new ObjectResponse(500, "Gửi OTP không thành công: " + e.getMessage(), ""));
         }
     }
 
