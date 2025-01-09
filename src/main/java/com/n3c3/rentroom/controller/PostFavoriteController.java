@@ -26,4 +26,10 @@ public class PostFavoriteController {
     public ResponseEntity<?> getFavoritesByUser(@PathVariable Long userId) {
         return postFavoriteService.getFavoritesByUser(userId);
     }
+
+    @GetMapping("/count-user/{userId}")
+    public ResponseEntity<?> getCountUserSavePostForUser(@PathVariable Long userId) {
+        return postFavoriteService.countUserSavePostForUser(userId);
+    }
+
 }

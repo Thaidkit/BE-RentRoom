@@ -64,7 +64,7 @@ public class PostFavoriteService {
     @Transactional
     public ResponseEntity<?> removeFavorite(Long postId) {
         try {
-            postFavoriteRepository.deleteById(postId);
+            postFavoriteRepository.deleteByPostId(postId);
             return ResponseEntity.ok().body(new ObjectResponse(200, "Post removed from favorites", null));
         }catch (Exception e) {
             log.warning("Error deleting:" + e.getMessage());
@@ -101,6 +101,19 @@ public class PostFavoriteService {
         }catch (Exception e) {
             log.warning(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ObjectResponse(500, "Internal Server Error", null));
+        }
+    }
+
+    public ResponseEntity<?> countUserSavePostForUser(Long userId) {
+        try {
+            User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+            List<Long> idPostList = postRepository.getPostIdListByUserId(user.getId());
+            log.info(idPostList.toString());
+            Integer countUserSavePost = postFavoriteRepository.countUserFavedPost(idPostList);
+            log.info(countUserSavePost.toString());
+            return ResponseEntity.ok().body(new ObjectResponse(200, "Count user save post", countUserSavePost));
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
