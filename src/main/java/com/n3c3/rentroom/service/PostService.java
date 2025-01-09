@@ -345,4 +345,36 @@ public class PostService {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
         }
     }
+
+    public ResponseEntity<?> prolongPost(Long postId, PostProlongDTO postProlongDTO) {
+        try {
+            Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+            User user = userRepository.findById(post.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+            if (LocalDate.now().isBefore(post.getExpiredDate())) {
+                if (user.getTotalMoney() < postProlongDTO.getAmountMoneyPayment())
+                    return ResponseEntity.badRequest().body(new ObjectResponse(400, "User haven't enough money to prolong this post", ""));
+                else {
+                    post.setExpiredDate(post.getExpiredDate().plusDays(postProlongDTO.getAmountDaysProlong()));
+                    user.setTotalMoney(user.getTotalMoney() - postProlongDTO.getAmountMoneyPayment());
+                    userRepository.save(user);
+                    postRepository.save(post);
+                    return ResponseEntity.ok(new ObjectResponse(200, "Post prolonged successfully!", "Expired date: " + post.getExpiredDate()));
+                }
+            } else {
+                if (user.getTotalMoney() < postProlongDTO.getAmountMoneyPayment())
+                    return ResponseEntity.badRequest().body(new ObjectResponse(400, "User haven't enough money to prolong this post", ""));
+                else {
+                    post.setExpiredDate(LocalDate.now().plusDays(postProlongDTO.getAmountDaysProlong()));
+                    user.setTotalMoney(user.getTotalMoney() - postProlongDTO.getAmountMoneyPayment());
+                    userRepository.save(user);
+                    postRepository.save(post);
+                    return ResponseEntity.ok(new ObjectResponse(200, "Post prolonged successfully!", "Expired date: " + post.getExpiredDate()));
+                }
+            }
+        } catch (Exception e) {
+            log.warning(e.getMessage());
+            return ResponseEntity.badRequest().body(new ObjectResponse(400, "Error prolonging posts!", e.getMessage()));
+        }
+    }
 }

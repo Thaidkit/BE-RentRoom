@@ -76,6 +76,11 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         return postService.deletePost(id);
     }
+
+    @PostMapping("/prolong/{postId}")
+    public ResponseEntity<?> prolongPost(@PathVariable Long postId, @RequestBody PostProlongDTO postProlongDTO) {
+        return postService.prolongPost(postId, postProlongDTO);
+    }
 }
 
 
