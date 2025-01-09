@@ -30,7 +30,7 @@ public class Post extends AbstractAudittingEntity {
     @Column(name = "room_size", nullable = false)
     private Double roomSize;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "expired_date")
