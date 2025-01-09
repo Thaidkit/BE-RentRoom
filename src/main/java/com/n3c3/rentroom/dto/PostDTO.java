@@ -1,14 +1,15 @@
 package com.n3c3.rentroom.dto;
 
+import com.n3c3.rentroom.entity.Media;
 import com.n3c3.rentroom.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
 public class PostDTO {
     private Long id;
     private String title;
@@ -25,6 +26,23 @@ public class PostDTO {
     private String contactEmail;
     private String link;
     private List<String> mediaUrls;
+
+    public PostDTO() {}
+
+    public PostDTO(Long id, String title, String address, Long price, Double roomSize, String description, String category, String contactEmail, String contactPhone, LocalDate expiredDate, List<String> mediaUrls, LocalDate createAt, String fullName) {
+        this.id = id;
+        this.title = title;
+        this.address = address;
+        this.price = price;
+        this.roomSize = roomSize;
+        this.description = description;
+        this.category = category;
+        this.contactEmail = contactEmail;
+        this.contactPhone = contactPhone;
+        this.expiredDate = expiredDate;
+        this.mediaUrls = mediaUrls;
+        this.fullName = fullName;
+    }
 
     public Long getId() {
         return id;
