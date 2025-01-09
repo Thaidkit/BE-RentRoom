@@ -31,7 +31,8 @@ public class SecurityConfiguration {
             "/logout",
             "/api/v1/forgotPassword/**",
             "/api/v1/payment/**",
-            "/confirm-webhook/**"
+            "/confirm-webhook/**",
+            "/verifyRegister/**"
     };
 
 
