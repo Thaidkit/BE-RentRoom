@@ -4,7 +4,6 @@ import com.n3c3.rentroom.dto.LoginDTO;
 
 import com.n3c3.rentroom.dto.ObjectResponse;
 import com.n3c3.rentroom.dto.UserCreateDTO;
-import com.n3c3.rentroom.entity.User;
 import com.n3c3.rentroom.service.AuthenticateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +37,11 @@ public class AuthenticationController {
     public ResponseEntity<ObjectResponse> verifyAndActivateAccount(@PathVariable Integer otp,
                                                                    @PathVariable String email) {
         return authenticateService.verifyAndActivateAccount(otp, email);
+    }
+
+    @PostMapping("/verifyRegister/resendOtp/{email}")
+    public ResponseEntity<?> resendOtp(@PathVariable String email) {
+        return authenticateService.resendOtp(email);
     }
 
 }

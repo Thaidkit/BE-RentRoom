@@ -62,35 +62,34 @@ public class ForgotPasswordController {
     }
 
     @PostMapping("/verifyOtp/{otp}/{email}")
-    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
+    public ResponseEntity<?> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
         try {
             User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Vui lòng nhập email hợp lệ!"));
             OTP otpob =otpRepository.findByOtpAndUser(otp,user).orElseThrow(()->new RuntimeException("OTP không hợp lệ cho email " + email));
 
             if (otpob.getExpirationTime().before(Date.from(Instant.now()))){
                 otpRepository.deleteById(otpob.getId());
-                return new ResponseEntity<>("OTP đã hết hạn!", HttpStatus.EXPECTATION_FAILED);
+                return ResponseEntity.badRequest().body(new ObjectResponse(400,"OTP đã hết hạn!", ""));
             }
 
-            return ResponseEntity.ok("OTP đã xác minh");
+            return ResponseEntity.ok().body(new ObjectResponse(200,"OTP đã xác minh", ""));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ObjectResponse(500, e.getMessage(), ""));
         }
     }
 
     @PostMapping("/changePassword/{email}")
-    public ResponseEntity<String> changePasswordHandle(@RequestBody ChangePassword changePassword,
+    public ResponseEntity<?> changePasswordHandle(@RequestBody ChangePassword changePassword,
                                                        @PathVariable String email){
         try {
             if(!Objects.equals(changePassword.password(), changePassword.repeatPassword())){
-                return new ResponseEntity<>("Vui lòng nhập lại mật khẩu",HttpStatus.EXPECTATION_FAILED);
+                return ResponseEntity.badRequest().body(new ObjectResponse(400, "Retyping password!", ""));
             }
             String encodedPassword = new BCryptPasswordEncoder(10).encode(changePassword.password());
             userRepository.updatePassword(email, encodedPassword);
-            return ResponseEntity.ok("Đổi mật khẩu thành công!");
+            return ResponseEntity.ok().body(new ObjectResponse(200, "Change password successfully!", ""));
         }  catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-
+            return ResponseEntity.internalServerError().body(new ObjectResponse(500, "Error changing password", e.getMessage()));
         }
     }
 
