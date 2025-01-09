@@ -15,7 +15,7 @@ spring:
 #    url: jdbc:mysql://192.168.0.103:3306/rent-room
 #    username: thai
 #    password: Thaimeo2003@
-    url: jdbc:mysql://3.91.48.186:3306/rent-room-2
+    url: jdbc:mysql://44.223.51.169:3306/rent-room-2
     username: root
 #    password: thaimeo2003
     password: root
@@ -52,7 +52,7 @@ rent-room:
     client-id: e2a17346-c7d3-431e-9d7e-8be066304573
     api-key: 23b5ec2f-172d-4e90-98a0-37b2bfeb79e2
     checksum-key: 59ca88278f9d56e1e5d27665fe36de3da117cff04e4ed81848851e67143b65cd
-  domain: "http://localhost:3000"
+  domain: "http://localhost:3003"
 
 
 
