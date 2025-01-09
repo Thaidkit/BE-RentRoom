@@ -14,7 +14,7 @@ public interface PostFavoriteRepository extends JpaRepository<PostFavorite, Long
 
     Optional<PostFavorite> findByUserIdAndPostId(Long userId, Long postId);
 
-    @Query(value = "SELECT f.* FROM Favorite f INNER JOIN Post p ON f.post_id = p.id WHERE f.user_id = :userId", nativeQuery = true)
+    @Query(value = "SELECT f.* FROM favorite f INNER JOIN Post p ON f.post_id = p.id WHERE f.user_id = :userId", nativeQuery = true)
     List<PostFavorite> findAllByUserId(@Param("userId") Long userId);
 
     void deleteById(Long id);
