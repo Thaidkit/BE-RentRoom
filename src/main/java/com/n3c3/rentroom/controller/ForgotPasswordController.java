@@ -129,7 +129,7 @@ public class ForgotPasswordController {
         OTP otp = new OTP();
         otp.setOtp(genOtp);
         otp.setUser(user);
-        otp.setExpirationTime(new Date(System.currentTimeMillis() + 600 * 1000)); // 2 phút
+        otp.setExpirationTime(new Date(System.currentTimeMillis() + 120 * 1000)); // 2 phút
 
         otpRepository.save(otp);
 
