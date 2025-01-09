@@ -83,20 +83,12 @@ public class AuthenticateService {
                 user.setCreateAt(LocalDate.now());
                 user.setModifyAt(LocalDate.now());
                 userService.save(user);
-                    // Tạo và gửi OTP
-                    int genOtp = otpGeneration();
-
-                    OTP otp = new OTP();
-                    otp.setOtp(genOtp);
-                    otp.setUser(user);
-                    otp.setExpirationTime(new Date(System.currentTimeMillis() + 600 * 1000)); // 2 phút
-
-                    otpRepository.save(otp);
-
-                    MailBody mailBody = new MailBody(user.getEmail(),
-                            "OTP Verification",
-                            "Đây là mã OTP để kích hoạt tài khoản của bạn: " + genOtp);
-                    emailService.sendSimpleMessage(mailBody);
+                    if (otpRepository.findOtpByEmail(user.getEmail()).isPresent()) {
+                        OTP otp = otpRepository.findOtpByEmail(user.getEmail()).get();
+                        otpRepository.deleteById(otp.getId());
+                        sendOtp(user);
+                    } else
+                        sendOtp(user);
                 return ResponseEntity.ok().body(new ObjectResponse(200, "User registered successfully", user));
             }
                 return ResponseEntity.ok().body(new ObjectResponse(500, "User registered fail", "Email or phone existed"));

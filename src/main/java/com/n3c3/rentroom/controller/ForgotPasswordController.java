@@ -39,25 +39,17 @@ public class ForgotPasswordController {
     @PostMapping("/verifyMail/{email}")
     public ResponseEntity<ObjectResponse> verifyEmail(@PathVariable String email) {
         try {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("Vui lòng nhập email hợp lệ!"));
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found!"));
 
-            int genOtp = otpGeneration();
-
-            MailBody mailBody = new MailBody(email, "OTP Verification", "Đây là OTP cho yêu cầu Quên mật khẩu của bạn: " + genOtp);
-
-            OTP otp = new OTP();
-            otp.setOtp(genOtp);
-            otp.setUser(user);
-            otp.setExpirationTime(new Date(System.currentTimeMillis() + 120 * 1000));
-
-            emailService.sendSimpleMessage(mailBody);
-            otpRepository.save(otp);
-
-            return ResponseEntity.ok().body(new ObjectResponse(200, "Đã gửi email để xác minh!", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ObjectResponse(500, "Lỗi khi gửi OTP qua email!", e.getMessage()));
+            if (otpRepository.findOtpByEmail(email).isPresent()) {
+                OTP otp = otpRepository.findOtpByEmail(email).get();
+                otpRepository.deleteById(otp.getId());
+                sendOtp(user);
+            } else
+                sendOtp(user);
+            return ResponseEntity.ok().body(new ObjectResponse(200, "OTP resend successful", ""));
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().body(new ObjectResponse(500, "OTP resend fail: " + e.getMessage(), ""));
         }
     }
 
@@ -131,7 +123,21 @@ public class ForgotPasswordController {
 //                    .body(new ObjectResponse(500, "Lỗi khi xử lý yêu cầu!", e.getMessage()));
 //        }
 //    }
+    private void sendOtp(User user) {
+        int genOtp = otpGeneration();
 
+        OTP otp = new OTP();
+        otp.setOtp(genOtp);
+        otp.setUser(user);
+        otp.setExpirationTime(new Date(System.currentTimeMillis() + 600 * 1000)); // 2 phút
+
+        otpRepository.save(otp);
+
+        MailBody mailBody = new MailBody(user.getEmail(),
+                "OTP Verification",
+                "Đây là mã OTP để kích hoạt tài khoản của bạn: " + genOtp);
+        emailService.sendSimpleMessage(mailBody);
+    }
     private Integer otpGeneration(){
         Random random = new Random();
         return random.nextInt(100_000,999_999);
