@@ -56,6 +56,10 @@ public class Post extends AbstractAudittingEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Media> media;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Comment> comments;
     
     public Long getId() {
         return id;
@@ -161,4 +165,11 @@ public class Post extends AbstractAudittingEntity {
         this.media = media;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }

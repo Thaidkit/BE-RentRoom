@@ -43,7 +43,7 @@ public class CommentService {
             userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
             postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post Not Found"));
 
-            commentRepository.saveComment(comment, postId, userId);
+            commentRepository.saveComment(userId, postId, comment);
             log.info("Comment created");
             return ResponseEntity.ok(new ObjectResponse(200, "Comment saved successfully!", ""));
         }catch (Exception e) {
