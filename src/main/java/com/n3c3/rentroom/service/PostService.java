@@ -1,9 +1,11 @@
 package com.n3c3.rentroom.service;
 
 import com.n3c3.rentroom.dto.*;
+import com.n3c3.rentroom.entity.Comment;
 import com.n3c3.rentroom.entity.Media;
 import com.n3c3.rentroom.entity.Post;
 import com.n3c3.rentroom.entity.User;
+import com.n3c3.rentroom.repository.CommentRepository;
 import com.n3c3.rentroom.repository.MediaRepository;
 import com.n3c3.rentroom.repository.PostRepository;
 import com.n3c3.rentroom.repository.UserRepository;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
+import java.security.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +39,16 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final MediaRepository mediaRepository;
+    private final CommentRepository commentRepository;
 
     public PostService(PostRepository postRepository,
                        UserRepository userRepository,
-                       MediaRepository mediaRepository) {
+                       MediaRepository mediaRepository,
+                       CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.mediaRepository = mediaRepository;
+        this.commentRepository = commentRepository;
     }
 
     public ResponseEntity<?> createPost(PostCreateDTO postDTO) {
@@ -132,7 +139,41 @@ public class PostService {
                 Post post = postRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Post with id " + id + " not found"));
 
-            return ResponseEntity.ok().body(new ObjectResponse(200, "Fetched post successfully!", post));
+                PostDetailDTO postDetailDTO = new PostDetailDTO();
+                postDetailDTO.setPost(post);
+
+                List<CommentResponeDTO> commentResponeDTOList = new ArrayList<>();
+                List<Comment> commentList = commentRepository.getListCommentByPostId(post.getId());
+                commentList.forEach(comment -> {
+                    CommentResponeDTO commentResponeDTO = new CommentResponeDTO();
+                    commentResponeDTO.setId(comment.getId());
+                    commentResponeDTO.setComment(comment.getComment());
+                    commentResponeDTO.setUserId(comment.getUser().getId());
+                    commentResponeDTO.setPostId(comment.getPost().getId());
+                    commentResponeDTO.setCreatedAt(comment.getCreateAt());
+
+                    commentResponeDTOList.add(commentResponeDTO);
+                });
+
+                List<CommentPostDetailDTO> commentPostDetailDTOList = new ArrayList<>();
+
+                for (CommentResponeDTO commentResponeDTO : commentResponeDTOList) {
+                    User user = userRepository.findById(commentResponeDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+                    CommentPostDetailDTO commentPostDetailDTO = new CommentPostDetailDTO();
+
+                    commentPostDetailDTO.setComment(commentResponeDTO.getComment());
+                    commentPostDetailDTO.setId(commentResponeDTO.getId());
+                    commentPostDetailDTO.setCommentDate(commentResponeDTO.getCreatedAt());
+                    commentPostDetailDTO.setFullNameUserComment(user.getFullName());
+
+                    commentPostDetailDTOList.add(commentPostDetailDTO);
+                }
+                postDetailDTO.setCommentPostDetaiDTOList(commentPostDetailDTOList);
+
+                log.info("Post detail: " + commentPostDetailDTOList);
+
+
+            return ResponseEntity.ok().body(new ObjectResponse(200, "Fetched post successfully!", postDetailDTO));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching post!", e.getMessage()));
         }

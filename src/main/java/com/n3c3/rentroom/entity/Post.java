@@ -160,4 +160,5 @@ public class Post extends AbstractAudittingEntity {
     public void setMedia(List<Media> media) {
         this.media = media;
     }
+
 }
