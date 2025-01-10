@@ -35,12 +35,12 @@ public class UserService {
             // Kiểm tra mật khẩu hiện tại nếu mật khẩu mới được cung cấp
             if (userDTO.getNewPassword() != null && !userDTO.getNewPassword().isEmpty()) {
                 if (!passwordEncoder.matches(userDTO.getCurrentPassword(), user.getPassword())) {
-                    throw new IllegalArgumentException("Current password is incorrect");
+                    throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
                 }
 
                 // Kiểm tra mật khẩu mới và xác nhận
                 if (!userDTO.getNewPassword().equals(userDTO.getConfirmPassword())) {
-                    throw new IllegalArgumentException("The new password and confirmation password do not match");
+                    throw new IllegalArgumentException("Xác nhận mật khẩu mới không trùng khớp");
                 }
 
                 // Cập nhật mật khẩu mới
