@@ -44,9 +44,8 @@ public class ForgotPasswordController {
             if (otpRepository.findOtpByEmail(email).isPresent()) {
                 OTP otp = otpRepository.findOtpByEmail(email).get();
                 otpRepository.deleteById(otp.getId());
-                sendOtp(user);
-            } else
-                sendOtp(user);
+            }
+            sendOtp(user);
             return ResponseEntity.ok().body(new ObjectResponse(200, "OTP resend successful", ""));
         } catch (RuntimeException e) {
             return ResponseEntity.internalServerError().body(new ObjectResponse(500, e.getMessage(), ""));
@@ -63,7 +62,8 @@ public class ForgotPasswordController {
                 otpRepository.deleteById(otpob.getId());
                 return ResponseEntity.badRequest().body(new ObjectResponse(400,"OTP đã hết hạn!", ""));
             }
-
+            // xoá otp khi xác minh thành công
+            otpRepository.deleteById(otpob.getId());
             return ResponseEntity.ok().body(new ObjectResponse(200,"OTP đã xác minh", ""));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ObjectResponse(500, e.getMessage(), ""));
@@ -79,6 +79,9 @@ public class ForgotPasswordController {
             }
             String encodedPassword = new BCryptPasswordEncoder(10).encode(changePassword.password());
             userRepository.updatePassword(email, encodedPassword);
+
+
+
             return ResponseEntity.ok().body(new ObjectResponse(200, "Change password successfully!", ""));
         }  catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ObjectResponse(500, "Error changing password", e.getMessage()));
