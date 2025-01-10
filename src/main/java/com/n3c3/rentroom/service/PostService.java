@@ -12,10 +12,7 @@ import com.n3c3.rentroom.repository.UserRepository;
 import com.n3c3.rentroom.repository.criteria.PostSearchCriteria;
 import com.n3c3.rentroom.repository.specification.PostSpecification;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -287,9 +284,9 @@ public class PostService {
             Page<Post> posts = postRepository.findAll(finalSpec, pageable);
 
             // Trả về thông tin các bài viết và chủ bài viết
-            List<PostDTO> postDTOs = posts.stream()
+            List<PostSearchFilterResponseDTO> postDTOs = posts.stream()
                     .map(post -> {
-                        PostDTO dto = new PostDTO();
+                        PostSearchFilterResponseDTO dto = new PostSearchFilterResponseDTO();
                         dto.setId(post.getId());
                         dto.setTitle(post.getTitle());
                         dto.setAddress(post.getAddress());
@@ -306,16 +303,17 @@ public class PostService {
                         dto.setPhone(post.getUser().getPhone());
 
                         // Lấy danh sách ảnh của bài đăng
-                        List<String> images = mediaRepository.findAllByPostId(post.getId()).stream()
-                                .map(Media::getUrl)
-                                .collect(Collectors.toList());
-                        dto.setMediaUrls(images);
+                        List<Media> images = mediaRepository.findAllByPostId(post.getId());
+
+                        dto.setMedia(images);
 
                         return dto;
                     })
                     .collect(Collectors.toList());
 
-            return ResponseEntity.ok().body(new ObjectResponse(200, "Posts fetched successfully!", postDTOs));
+            Page<PostSearchFilterResponseDTO> postSearchFilterResponseDTOPage = new PageImpl<>(postDTOs, pageable, posts.getTotalElements());
+
+            return ResponseEntity.ok().body(new ObjectResponse(200, "Posts fetched successfully!", postSearchFilterResponseDTOPage));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Error fetching posts!", e.getMessage()));
         }

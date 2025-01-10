@@ -40,4 +40,9 @@ public class OrderPaymentController {
     public ResponseEntity<?> updateOrderPayment(@RequestBody OrderPaymentUpdateDTO orderPaymentUpdateDTO) {
         return orderPaymentService.updateOrderPayment(orderPaymentUpdateDTO);
     }
+
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<?> getOrderPaymentHistory(@PathVariable("userId") Long userId) {
+        return orderPaymentService.getHistoryPaymentUser(userId);
+    }
 }

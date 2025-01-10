@@ -20,8 +20,11 @@ import vn.payos.type.PaymentData;
 import vn.payos.type.PaymentLinkData;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -57,7 +60,7 @@ public class OrderPaymentService {
             orderPayment.setStatusPayment(StatusPayment.PENDING);
             orderPayment.setUser(user);
 
-            StringBuilder desc = new StringBuilder("Người dùng id ").append(user.getId()).append(" nạp tiền!");
+            StringBuilder desc = new StringBuilder(user.getFullName()).append(" nạp tiền!");
 
             orderPayment.setDescription(desc.toString());
             orderPaymentRepository.save(orderPayment);
@@ -176,6 +179,20 @@ public class OrderPaymentService {
             return ResponseEntity.status(200).body(new ObjectResponse(200, "success", orderPayment));
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body(new ObjectResponse(500, "Internal Error Server", e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<?> getHistoryPaymentUser(Long userId) {
+        try {
+            userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+            List<OrderPayment> orderPaymentList = orderPaymentRepository.findAllByUserId(userId);
+            orderPaymentList = orderPaymentList.stream()
+                    .sorted(Comparator.comparing(OrderPayment::getId).reversed())
+                    .toList();
+
+            return ResponseEntity.status(200).body(new ObjectResponse(200, "Get all history payment successfully", orderPaymentList));
+        } catch (Exception e){
             return ResponseEntity.status(500).body(new ObjectResponse(500, "Internal Error Server", e.getMessage()));
         }
     }
